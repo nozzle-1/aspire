@@ -53,7 +53,7 @@ public partial class Metrics : IDisposable, IPageWithSessionAndUrlState<Metrics.
     public required ProtectedSessionStorage SessionStorage { get; set; }
 
     [Inject]
-    public required TelemetryRepository TelemetryRepository { get; set; }
+    public required ITelemetryRepository TelemetryRepository { get; set; }
 
     [Inject]
     public required TracesViewModel TracesViewModel { get; set; }

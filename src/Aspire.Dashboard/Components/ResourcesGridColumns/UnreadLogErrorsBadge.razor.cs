@@ -20,7 +20,7 @@ public partial class UnreadLogErrorsBadge
     public required Dictionary<OtlpApplication, int>? UnviewedErrorCounts { get; set; }
 
     [Inject]
-    public required TelemetryRepository TelemetryRepository { get; init; }
+    public required ITelemetryRepository TelemetryRepository { get; init; }
     [Inject]
     public required NavigationManager NavigationManager { get; init; }
 

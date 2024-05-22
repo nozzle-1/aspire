@@ -16,9 +16,9 @@ namespace Aspire.Dashboard.Otlp.Grpc;
 public class OtlpTraceService : TraceService.TraceServiceBase
 {
     private readonly ILogger<OtlpTraceService> _logger;
-    private readonly TelemetryRepository _telemetryRepository;
+    private readonly ITelemetryRepository _telemetryRepository;
 
-    public OtlpTraceService(ILogger<OtlpTraceService> logger, TelemetryRepository telemetryRepository)
+    public OtlpTraceService(ILogger<OtlpTraceService> logger, ITelemetryRepository telemetryRepository)
     {
         _logger = logger;
         _telemetryRepository = telemetryRepository;

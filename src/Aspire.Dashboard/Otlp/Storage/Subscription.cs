@@ -7,12 +7,13 @@ public sealed class Subscription : IDisposable
 {
     private readonly Func<Task> _callback;
     private readonly ExecutionContext? _executionContext;
-    private readonly TelemetryRepository _telemetryRepository;
+    private readonly ITelemetryRepository _telemetryRepository;
+    private readonly ILogger _logger;
     private readonly CancellationTokenSource _cts;
     private readonly CancellationToken _cancellationToken;
     private readonly Action _unsubscribe;
     private readonly SemaphoreSlim _lock = new SemaphoreSlim(1, 1);
-    private ILogger Logger => _telemetryRepository._logger;
+    private ILogger Logger => _logger;
 
     private DateTime? _lastExecute;
 
@@ -20,7 +21,7 @@ public sealed class Subscription : IDisposable
     public SubscriptionType SubscriptionType { get; }
     public string Name { get; }
 
-    public Subscription(string name, string? applicationId, SubscriptionType subscriptionType, Func<Task> callback, Action unsubscribe, ExecutionContext? executionContext, TelemetryRepository telemetryRepository)
+    public Subscription(string name, string? applicationId, SubscriptionType subscriptionType, Func<Task> callback, Action unsubscribe, ExecutionContext? executionContext, ITelemetryRepository telemetryRepository, ILogger logger)
     {
         Name = name;
         ApplicationId = applicationId;
@@ -29,6 +30,7 @@ public sealed class Subscription : IDisposable
         _unsubscribe = unsubscribe;
         _executionContext = executionContext;
         _telemetryRepository = telemetryRepository;
+        _logger = logger;
         _cts = new CancellationTokenSource();
         _cancellationToken = _cts.Token;
     }
@@ -47,7 +49,7 @@ public sealed class Subscription : IDisposable
             var lastExecute = _lastExecute;
             if (lastExecute != null)
             {
-                var s = lastExecute.Value.Add(_telemetryRepository._subscriptionMinExecuteInterval) - DateTime.UtcNow;
+                var s = lastExecute.Value.Add(_telemetryRepository.SubscriptionMinExecuteInterval) - DateTime.UtcNow;
                 if (s > TimeSpan.Zero)
                 {
                     Logger.LogTrace("Subscription '{Name}' minimum execute interval hit. Waiting {DelayInterval}.", Name, s);

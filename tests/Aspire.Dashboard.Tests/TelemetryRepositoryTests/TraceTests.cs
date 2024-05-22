@@ -25,7 +25,7 @@ public class TraceTests
     [InlineData(OtlpSpanKind.Unspecified, (Span.Types.SpanKind)1000)]
     public void ConvertSpanKind(OtlpSpanKind expected, Span.Types.SpanKind value)
     {
-        var result = TelemetryRepository.ConvertSpanKind(value);
+        var result = InMemoryTelemetryRepository.ConvertSpanKind(value);
         Assert.Equal(expected, result);
     }
 

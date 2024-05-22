@@ -37,7 +37,7 @@ public partial class StructuredLogs : IPageWithSessionAndUrlState<StructuredLogs
     public string? ApplicationName { get; set; }
 
     [Inject]
-    public required TelemetryRepository TelemetryRepository { get; set; }
+    public required ITelemetryRepository TelemetryRepository { get; set; }
 
     [Inject]
     public required StructuredLogsViewModel ViewModel { get; set; }

@@ -16,9 +16,9 @@ namespace Aspire.Dashboard.Otlp.Grpc;
 public class OtlpLogsService : LogsService.LogsServiceBase
 {
     private readonly ILogger<OtlpLogsService> _logger;
-    private readonly TelemetryRepository _telemetryRepository;
+    private readonly ITelemetryRepository _telemetryRepository;
 
-    public OtlpLogsService(ILogger<OtlpLogsService> logger, TelemetryRepository telemetryRepository)
+    public OtlpLogsService(ILogger<OtlpLogsService> logger, ITelemetryRepository telemetryRepository)
     {
         _logger = logger;
         _telemetryRepository = telemetryRepository;

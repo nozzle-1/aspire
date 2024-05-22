@@ -27,7 +27,7 @@ public partial class TraceDetail : ComponentBase
     public required string TraceId { get; set; }
 
     [Inject]
-    public required TelemetryRepository TelemetryRepository { get; set; }
+    public required ITelemetryRepository TelemetryRepository { get; set; }
 
     [Inject]
     public required IEnumerable<IOutgoingPeerResolver> OutgoingPeerResolvers { get; set; }

@@ -9,7 +9,7 @@ namespace Aspire.Dashboard.Model;
 
 public class StructuredLogsViewModel
 {
-    private readonly TelemetryRepository _telemetryRepository;
+    private readonly ITelemetryRepository _telemetryRepository;
     private readonly List<LogFilter> _filters = new();
 
     private PagedResult<OtlpLogEntry>? _logs;
@@ -19,7 +19,7 @@ public class StructuredLogsViewModel
     private int? _logsCount;
     private LogLevel? _logLevel;
 
-    public StructuredLogsViewModel(TelemetryRepository telemetryRepository)
+    public StructuredLogsViewModel(ITelemetryRepository telemetryRepository)
     {
         _telemetryRepository = telemetryRepository;
     }

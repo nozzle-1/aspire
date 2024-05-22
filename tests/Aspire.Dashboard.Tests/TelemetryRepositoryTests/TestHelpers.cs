@@ -189,7 +189,7 @@ internal static class TestHelpers
         };
     }
 
-    public static TelemetryRepository CreateRepository(
+    public static ITelemetryRepository CreateRepository(
         int? maxMetricsCount = null,
         int? maxAttributeCount = null,
         int? maxAttributeLength = null,
@@ -214,7 +214,7 @@ internal static class TestHelpers
             options.MaxSpanEventCount = maxSpanEventCount.Value;
         }
 
-        var repository = new TelemetryRepository(NullLoggerFactory.Instance, Options.Create(new DashboardOptions { TelemetryLimits = options }));
+        var repository = new InMemoryTelemetryRepository(NullLoggerFactory.Instance, Options.Create(new DashboardOptions { TelemetryLimits = options }));
         if (subscriptionMinExecuteInterval != null)
         {
             repository._subscriptionMinExecuteInterval = subscriptionMinExecuteInterval.Value;

@@ -24,7 +24,7 @@ public partial class Resources : ComponentBase, IAsyncDisposable
     [Inject]
     public required IDashboardClient DashboardClient { get; init; }
     [Inject]
-    public required TelemetryRepository TelemetryRepository { get; init; }
+    public required ITelemetryRepository TelemetryRepository { get; init; }
     [Inject]
     public required NavigationManager NavigationManager { get; init; }
     [Inject]

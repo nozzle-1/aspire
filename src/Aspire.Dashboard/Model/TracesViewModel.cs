@@ -8,7 +8,7 @@ namespace Aspire.Dashboard.Model;
 
 public class TracesViewModel
 {
-    private readonly TelemetryRepository _telemetryRepository;
+    private readonly ITelemetryRepository _telemetryRepository;
 
     private PagedResult<OtlpTrace>? _traces;
     private string? _applicationServiceId;
@@ -16,7 +16,7 @@ public class TracesViewModel
     private int _startIndex;
     private int? _count;
 
-    public TracesViewModel(TelemetryRepository telemetryRepository)
+    public TracesViewModel(ITelemetryRepository telemetryRepository)
     {
         _telemetryRepository = telemetryRepository;
     }

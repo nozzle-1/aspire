@@ -16,7 +16,7 @@ using static OpenTelemetry.Proto.Trace.V1.Span.Types;
 
 namespace Aspire.Dashboard.Otlp.Storage;
 
-public sealed class TelemetryRepository
+public sealed class InMemoryTelemetryRepository : ITelemetryRepository
 {
     private readonly object _lock = new();
     internal readonly ILogger _logger;
@@ -40,9 +40,11 @@ public sealed class TelemetryRepository
     private readonly CircularBuffer<OtlpTrace> _traces;
     private readonly DashboardOptions _dashboardOptions;
 
-    public TelemetryRepository(ILoggerFactory loggerFactory, IOptions<DashboardOptions> dashboardOptions)
+    public TimeSpan SubscriptionMinExecuteInterval => _subscriptionMinExecuteInterval;
+
+    public InMemoryTelemetryRepository(ILoggerFactory loggerFactory, IOptions<DashboardOptions> dashboardOptions)
     {
-        _logger = loggerFactory.CreateLogger(typeof(TelemetryRepository));
+        _logger = loggerFactory.CreateLogger(typeof(InMemoryTelemetryRepository));
         _dashboardOptions = dashboardOptions.Value;
 
         _logs = new(_dashboardOptions.TelemetryLimits.MaxLogCount);
@@ -107,7 +109,7 @@ public sealed class TelemetryRepository
         }
     }
 
-    internal void MarkViewedErrorLogs(string? instanceId)
+    public void MarkViewedErrorLogs(string? instanceId)
     {
         _logsLock.EnterWriteLock();
 
@@ -207,7 +209,7 @@ public sealed class TelemetryRepository
             {
                 subscriptions.Remove(subscription!);
             }
-        }, ExecutionContext.Capture(), this);
+        }, ExecutionContext.Capture(), this, _logger);
 
         lock (_lock)
         {

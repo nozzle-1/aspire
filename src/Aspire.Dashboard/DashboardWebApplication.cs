@@ -16,6 +16,7 @@ using Aspire.Dashboard.Configuration;
 using Aspire.Dashboard.Model;
 using Aspire.Dashboard.Otlp.Grpc;
 using Aspire.Dashboard.Otlp.Storage;
+using Aspire.Dashboard.Otlp.Storage.EFCore;
 using Aspire.Hosting;
 using Microsoft.AspNetCore.Authentication.Certificate;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -25,6 +26,7 @@ using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Server.Kestrel;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.AspNetCore.Server.Kestrel.Https;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 using Microsoft.FluentUI.AspNetCore.Components;
@@ -132,9 +134,20 @@ public sealed class DashboardWebApplication : IAsyncDisposable
         // Data from the server.
         builder.Services.AddScoped<IDashboardClient, DashboardClient>();
 
+        // EF Core
+        string connectionString = builder.Configuration.GetConnectionString("TelemetryDbContext")!;
+        builder.Services.AddDbContext<TelemetryDbContext>(builder => builder.UseNpgsql(connectionString));
+
         // OTLP services.
         builder.Services.AddGrpc();
-        builder.Services.AddSingleton<TelemetryRepository>();
+        builder.Services.AddSingleton<InMemoryTelemetryRepository>();
+        builder.Services.AddScoped<ITelemetryRepository>(builder =>
+        {
+            var repository = builder.GetRequiredService<InMemoryTelemetryRepository>();
+            var dbContext = builder.GetRequiredService<TelemetryDbContext>();
+            return new EFCoreTelemetryDecorator(dbContext, repository);
+        });
+
         builder.Services.AddTransient<StructuredLogsViewModel>();
         builder.Services.AddTransient<TracesViewModel>();
         builder.Services.TryAddEnumerable(ServiceDescriptor.Scoped<IOutgoingPeerResolver, ResourceOutgoingPeerResolver>());
@@ -594,6 +607,11 @@ public sealed class DashboardWebApplication : IAsyncDisposable
         {
             return -1;
         }
+
+        //TODO: load all data here
+        var scope = _app.Services.CreateScope();
+        var dbContext = scope.ServiceProvider.GetRequiredService<TelemetryDbContext>();
+        dbContext.Database.Migrate();
 
         _app.Run();
         return 0;
