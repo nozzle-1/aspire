@@ -2,13 +2,14 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using Aspire.Dashboard.Otlp.Model;
+using Aspire.Dashboard.Storage.EFCore;
 using Google.Protobuf.Collections;
 using OpenTelemetry.Proto.Logs.V1;
 using OpenTelemetry.Proto.Metrics.V1;
 using OpenTelemetry.Proto.Resource.V1;
 using OpenTelemetry.Proto.Trace.V1;
 
-namespace Aspire.Dashboard.Otlp.Storage.EFCore;
+namespace Aspire.Dashboard.Otlp.Storage;
 
 public class EFCoreTelemetryDecorator : ITelemetryRepository
 {

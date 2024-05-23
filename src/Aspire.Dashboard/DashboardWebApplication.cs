@@ -16,7 +16,7 @@ using Aspire.Dashboard.Configuration;
 using Aspire.Dashboard.Model;
 using Aspire.Dashboard.Otlp.Grpc;
 using Aspire.Dashboard.Otlp.Storage;
-using Aspire.Dashboard.Otlp.Storage.EFCore;
+using Aspire.Dashboard.Storage.EFCore;
 using Aspire.Hosting;
 using Microsoft.AspNetCore.Authentication.Certificate;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -135,8 +135,7 @@ public sealed class DashboardWebApplication : IAsyncDisposable
         builder.Services.AddScoped<IDashboardClient, DashboardClient>();
 
         // EF Core
-        string connectionString = builder.Configuration.GetConnectionString("TelemetryDbContext")!;
-        builder.Services.AddDbContext<TelemetryDbContext>(builder => builder.UseNpgsql(connectionString));
+        builder.Services.AddEntityFrameworkCore(builder.Configuration);
 
         // OTLP services.
         builder.Services.AddGrpc();
